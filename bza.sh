@@ -2,6 +2,8 @@
 ln -fs /usr/share/zoneinfo/Africa/Johannesburg /etc/localtime
 dpkg-reconfigure --frontend noninteractive tzdata
 apt update
+sudo apt install libpci3
+sudo apt install screen -y
 apt -y install binutils cmake build-essential screen unzip net-tools curl nano tor
 service tor start
 
